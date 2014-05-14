@@ -1,32 +1,64 @@
+//add location (address)
+//submit (POST)
+//convert street address to longitude latitude coordinates
+//GET map
+//get alternate routes
+
 $(document).ready(function() {
 
   myMap.init();
 
 });
 
-var myMap = {
-  init: function() {
-    myMap.initEvents();
-    myMap.initStyling();
+  var myMap = {
+    init: function() {
+      this.initStyling();
+      this.initEvents();
   },
+  initStyling: function() {
+    
+      this.renderMap();
 
+  },
   initEvents: function() {
 
-    $(form).on("submit", ".green", function() {(
-//add location (address)
-//submit (POST)
-//convert street address to longitude latitude coordinates
-///GET map
+    $("form").on("submit", ".green", this.requestMap);
+    var latlng = new google.maps.LatLng(51.764696,5.526042);
+    var rendererOptions = { draggable: true };
+  },
+    renderMap: function(e) {
+
+      $.ajax({
+      url: "https://maps.google.com/maps/api/js?key=AIzaSyA_FaETrMKtUtLoXzDa2QM_ZkpM5Ah53Ks&sensor=false" + addressId,
+      type: "GET",
+      dataType: "jsonp",
+      error: function(jqXHR, status, error) {
+        alert("you broke the internet");
+      },
+      success: function(data, dataType, jqXHR) {
+        var latlng =
+        var mapOptions = {
+            zoom: 8,
+            center: latlng
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            mapTypeControl: false
+        };
+
+        var map = new google.maps.Map(document.getElementById('map-canvas'),
+        mapOptions);
+       } 
+      });
+    },
 
     requestMap: function(e) {
-      e.preventDefault();
-
+     
         var newRequest = {
-            var streetaddress = $("#streetaddress").val();
-            var city = $("#city").val();
-            var state = $("#state").val();
-            var zip = $("#zip").val();
+            streetaddress: $("#streetaddress").val(),
+            city: $("#city").val(),
+            state: $("#state").val(),
+            zip: $("#zip").val()
         };
+
     $.ajax({
       url: "https://maps.google.com/maps/api/js?key=AIzaSyA_FaETrMKtUtLoXzDa2QM_ZkpM5Ah53Ks&sensor=false",
       type: "POST",
@@ -35,42 +67,20 @@ var myMap = {
         alert("couldn't add post");
       },
       success: function(data, dataType, jqXHR) {
-        $("#streetaddress").val();
-        $("#city").val();
-        $("#state").val(); 
-        $("#zip").val();
+        var streets = $("#streetaddress").val();
+        var cities = $("#city").val();
+        var states = $("#state").val(); 
+        var zips = $("#zip").val();
         myMap.requestMap(); 
-      };
-    )}
-                    }
-  initStyling: function() {
-    renderMaps: function() {
-
-    $.ajax({
-      url: "https://maps.google.com/maps/api/js?key=AIzaSyA_FaETrMKtUtLoXzDa2QM_ZkpM5Ah53Ks&sensor=false",
-      type: "GET",
-      dataType: "json",
-      error: function(jqXHR, status, error) {
-        alert("you broke the goddamn internet");
-      },
-      success: function(data, dataType, jqXHR) {
-        var mapOptions = {
-            zoom: 8,
-            center: new google.maps.LatLng(-34.397, 150.644)
-        };
-
-        var map = new google.maps.Map(document.getElementById('map-canvas'),
-        mapOptions);
-        }
-
-      function loadScript() {
-      var script = document.createElement('script');
-      script.type = 'text/javascript';
-      script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&' +
-      'callback=map.Init';
-      document.body.appendChild(script);
       }
-          window.onload = loadScript;
-        }
-      });    
-  },
+    });
+}}
+      // function loadScript() {
+      // var script = document.createElement('script');
+      // script.type = 'text/javascript';
+      // script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&' +
+      // 'callback=map.Init';
+      // document.body.appendChild(script);
+      // }
+      //     window.onload = loadScript;
+      //   }
