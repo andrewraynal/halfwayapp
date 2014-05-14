@@ -5,23 +5,27 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
     <title>Passby|Get around it.</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
     <script type="text/javascript" src="https://maps.google.com/maps/api/js?key=AIzaSyA_FaETrMKtUtLoXzDa2QM_ZkpM5Ah53Ks&sensor=false"></script>
-    <script type="text/javascript" src="scripts/geo.js"></script>
+    <script type="text/javascript" src="scripts/ajax.js"></script>
     <script src="scripts/libs/modernizr-2.6.2.min.js"></script>
     <!-- jQuery-->
     <script src="scripts/libs/jquery-1.10.2.min.js"></script>
-
-
     <link type="text/css" rel="stylesheet" href="styles/styles.css">
+     <style>
+        .mapload {
+             width: 100%;
+             height: 400px;
+        }
+    </style>  
     
   </head>
   <body>
     <header class="padded">
       <div class="container">
         <div class="row">
-
           <div class="one half">
-            <h2 class="logo"><a href="/" target="_parent"><img src="" alt="GroundworkCSS">Passby</a></h2>
+            <h2 class="logo"><a href="/" target="_parent"><img src="""" alt="GroundworkCSS">Passby</a></h2>
           </div>
           <div class="one half">
             <p class="small double-pad-top no-pad-small-tablet align-right align-left-small-tablet"><a href="https://theironyard" target="_parent">TIY Project</a> - Version 1<br>Created & Maintained by <a href="http://twitter.com/andrewraynal" target="_blank">AndrewR</a></p>
@@ -79,28 +83,28 @@
       </div>
       <hr>
       <article class="row">
-        <section class="two fourths right-one padded bounceInDown animated">
-          <article class="mapcanvas" id="mapcanvas">  
+        <article class="map-canvas" id="map-canvas">  
         <p id="status"><span id="location"></span></p>
-         <p id="error"></p>
         </article>
+        <section class="two fourths right-one padded bounceInDown animated">
         <h4>Input Your Information</h4>
+        
           <form action="#" method="post">
             <fieldset>
               <legend>Location Form</legend>
               <div class="row">
                 <div class="one whole padded">
                   <label for="address">Location Address</label>
-                  <input id="useraddress" type="text" placeholder="Street Address">
+                  <input id="streetaddress" type="text" placeholder="Street Address">
                 </div>
               </div>
               <div class="row">
                 <div class="two fourths padded">
-                  <input type="text" placeholder="City">
+                  <input id="city" type="text" placeholder="City">
                 </div>
                 <div class="one fourth padded"><span class="select-wrap">
                     <select>
-                      <option value="" disabled="" selected="">State</option>
+                      <option id="state" value="" disabled="" selected="">State</option>
                       <option value="AL">Alabama</option>
                       <option value="AK">Alaska</option>
                       <option value="AZ">Arizona</option>
@@ -181,7 +185,7 @@
                       <option value="YT">Yukon Territory</option>
                     </select></span></div>
                 <div class="one fourth padded">
-                  <input type="text" placeholder="Zip Code">
+                  <input id="zip" type="text" placeholder="Zip Code">
                 </div>
               </div>
           <p>
@@ -276,8 +280,6 @@
       </div>
     </footer>
     <!-- javascript-->
-    
-    
     <script src="scripts/groundwork.all.js"></script>
   </body>
 </html>

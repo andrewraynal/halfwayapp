@@ -6,29 +6,48 @@ $(document).ready(function() {
 
 var myMap = {
   init: function() {
-    this.initStyling();
-    this.initEvents();
+    myMap.initEvents();
+    myMap.initStyling();
   },
-  initStyling: function() {
-    
-    this.renderMaps();
 
-  },
   initEvents: function() {
 
-    $("form").on("submit", ".green", this.requestMap);
+    $(form).on("submit", ".green", function() {(
+//add location (address)
+//submit (POST)
+//convert street address to longitude latitude coordinates
+///GET map
 
-  },
-  render: function($el, template, data) {
-      var tmpl = _.template(template, data);
+    requestMap: function(e) {
+      e.preventDefault();
 
-      $el.html(tmpl);
-
-  },
-  renderMaps: function() {
+        var newRequest = {
+            var streetaddress = $("#streetaddress").val();
+            var city = $("#city").val();
+            var state = $("#state").val();
+            var zip = $("#zip").val();
+        };
+    $.ajax({
+      url: "https://maps.google.com/maps/api/js?key=AIzaSyA_FaETrMKtUtLoXzDa2QM_ZkpM5Ah53Ks&sensor=false",
+      type: "POST",
+      data: newRequest, 
+      error: function(jqXHR, status, error) {
+        alert("couldn't add post");
+      },
+      success: function(data, dataType, jqXHR) {
+        $("#streetaddress").val();
+        $("#city").val();
+        $("#state").val(); 
+        $("#zip").val();
+        myMap.requestMap(); 
+      };
+    )}
+                    }
+  initStyling: function() {
+    renderMaps: function() {
 
     $.ajax({
-      url: "http://tiy-fee-rest.herokuapp.com/collections/myBlog",
+      url: "https://maps.google.com/maps/api/js?key=AIzaSyA_FaETrMKtUtLoXzDa2QM_ZkpM5Ah53Ks&sensor=false",
       type: "GET",
       dataType: "json",
       error: function(jqXHR, status, error) {
@@ -48,40 +67,10 @@ var myMap = {
       var script = document.createElement('script');
       script.type = 'text/javascript';
       script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&' +
-      'callback=initialize';
+      'callback=map.Init';
       document.body.appendChild(script);
       }
           window.onload = loadScript;
         }
-      });
-
-    },
-  
+      });    
   },
-  requestMap: function(e) {
-    e.preventDefault();
-
-        var newRequest = {
-           var latlng = {
-            var streetaddress = $("#streetaddress").val();
-            var city = $("#city").val();
-            var state = $("#state").val();
-            var zip = $("#zip");
-          };
-        };
-    $.ajax({
-      url: "https://maps.google.com/maps/api/js?key=AIzaSyA_FaETrMKtUtLoXzDa2QM_ZkpM5Ah53Ks&sensor=false",
-      type: "POST",
-      data: newRequest, 
-      error: function(jqXHR, status, error) {
-        alert("couldn't add post");
-      },
-      success: function(data, dataType, jqXHR) {
-        $(".newPostTitle").val("");
-        $(".authorPostForm").val("");
-        $(".postContentForm").val(""); 
-        $("#myModal").modal("hide");
-        myBlog.renderMaps();
-      }
-
-};
