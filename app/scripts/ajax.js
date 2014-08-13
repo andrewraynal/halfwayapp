@@ -11,20 +11,20 @@ $(document).ready(function() {
 });
 
   var myMap = {
-    init: function() {
+  init: function() {
       this.initStyling();
       this.initEvents();
   },
   initStyling: function() {
     
       this.renderMap();
-
   },
   initEvents: function() {
 
     $("form").on("submit", ".green", this.requestMap);
     var latlng = new google.maps.LatLng(51.764696,5.526042);
     var rendererOptions = { draggable: true };
+    var addressId =  
   },
     renderMap: function(e) {
 
@@ -36,10 +36,10 @@ $(document).ready(function() {
         alert("you broke the internet");
       },
       success: function(data, dataType, jqXHR) {
-        var latlng =
+        calculateRoute($("#currentlocation").val(), $("#destination").val());
         var mapOptions = {
             zoom: 8,
-            center: latlng
+            center: latlng,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             mapTypeControl: false
         };
@@ -47,16 +47,13 @@ $(document).ready(function() {
         var map = new google.maps.Map(document.getElementById('map-canvas'),
         mapOptions);
        } 
-      });
-    },
-
+    });
+  },
     requestMap: function(e) {
      
         var newRequest = {
-            streetaddress: $("#streetaddress").val(),
-            city: $("#city").val(),
-            state: $("#state").val(),
-            zip: $("#zip").val()
+            currentlocation: $("#currentlocation").val(),
+            destinationlocation: $("#destinationlocation").val()
         };
 
     $.ajax({
@@ -67,10 +64,8 @@ $(document).ready(function() {
         alert("couldn't add post");
       },
       success: function(data, dataType, jqXHR) {
-        var streets = $("#streetaddress").val();
-        var cities = $("#city").val();
-        var states = $("#state").val(); 
-        var zips = $("#zip").val();
+        var currentlocation = $("#currentlocation").val("");
+        var destinationlocation = $("#destinationlocation").val("")
         myMap.requestMap(); 
       }
     });

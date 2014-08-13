@@ -1,123 +1,134 @@
-(function ( $ ) {
-            $.fn.GeoLocation = function( options ) {
-                var settings = $.extend({
-                    home: { latitude: 53.339381, longitude: -6.260533 },
-                }, options );
-                
-                var home = new google.maps.LatLng(settings.home.latitude, settings.home.longitude);
-                     
-                return this.each(function() {    
-                    var element = $(this);
-                    element.text('Attempting to find your location');
-                    
-                    function displayCurrentPosition(data) {
-                        element.html('<div class="map-canvas"></div>');
-                        
-                        var current = new google.maps.LatLng(data.coords.latitude, data.coords.longitude);
-                        
-                        var options = {
-                            center: current,
-                            mapTypeId: google.maps.MapTypeId.HYBRID,
-                            zoom: 10,
-                        };
-                        
-                        var map = new google.maps.Map(element[0], options);
-                            
-                        var directions = {
-                            origin: current,
-                            destination: home,
-                            travelMode: google.maps.DirectionsTravelMode.DRIVING
-                        };
-                        
-                        display = new google.maps.DirectionsRenderer({ map: map });
-                        
-                        service = new google.maps.DirectionsService();
-                        service.route(directions, function(response, status) {
-                            if (status == google.maps.DirectionsStatus.OK) {
-                                display.setDirections(response);
-                            }
-                            else
-                                alert ('failed to get directions');
-                        });
-                    }
-                    
-                    function onError(error) {
-                        switch(error.code) {
-                            case error.PERMISSION_DENIED:
-                                element.text('Access to location API denied by user');
-                                break;
-                            case error.POSITION_UNAVAILABLE:
-                                element.text('Unable to determine location');
-                                break;
-                            case error.TIMEOUT:
-                                element.text('Unable to determine location, the request timed out');
-                                break;
-                            case error.UNKNOWN_ERROR:
-                                element.text('An unknown error occurred!');
-                                break;
-                        }
-                    }
-                    
-                    if(navigator.geolocation) {
-                        navigator.geolocation.getCurrentPosition(displayCurrentPosition, onError);
-                    } else {
-                        element.text('Geolocation is not supported by this browser, please upgrade to a more recent version');
-                    }
-                });
-         
-            };
-         
-        }( jQuery ));
-
-        jQuery(document).ready(function() {
-            jQuery('.mapload').GeoLocation();
+   function writeAddressName(latLng) {
+        var geocoder = new google.maps.Geocoder();
+        geocoder.geocode({
+          "location": latLng
+        },
+        function(results, status) {
+          if (status == google.maps.GeocoderStatus.OK)
+            document.getElementById("address").innerHTML = results[0].formatted_address;
+          else
+            document.getElementById("error").innerHTML += "Unable to retrieve your address" + "<br />";
         });
-   
-
-
-// error: function (error){
-//        var mapId = document.querySelector("#status");
-//         mapId.innerHTML = typeof msg == "string" ? msg : "failed";
-//     mapId.className = "fail";
-//     }
-//       if (navigator.geolocation) {
-//       navigator.geolocation.getCurrentPosition(success, error);
-//       } else {
-//       error("not supported");        
-//     };
-//   }
-//     success: function(position){    
-//       var mapId = $this.("#status");
-//       if (this.className == "success:") {
-//               return;
-//           }
-//       $this.html(mapId) = "found you!";
+      }
+ function geolocationSuccess(position) {
+        var userLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        // Write the formatted address
+        writeAddressName(userLatLng);
  
-//     $(document.createElement("div")).addId("mapcanvas");
-//     $("#mapcanvas").css({height: "400px", widht: "400px"});
-//     $(".mapload").append("#mapcanvas");
+        var myOptions = {
+          zoom : 5,
+          center : userLatLng,
+          mapTypeId : google.maps.MapTypeId.ROADMAP
+        };
+        // Draw the map
+        var mapObject = new google.maps.Map(document.getElementById("map"), myOptions);
+        // Place the marker
+        new google.maps.Marker({
+          map: mapObject,
+          position: userLatLng
+        });
+        // Draw a circle around the user position to have an idea of the current localization accuracy
+        var circle = new google.maps.Circle({
+          center: userLatLng,
+          radius: position.coords.accuracy,
+          map: mapObject,
+          fillColor: '#0000FF',
+          fillOpacity: 0.5,
+          strokeColor: '#0000FF',
+          strokeOpacity: 1.0
+        });
+        mapObject.fitBounds(circle.getBounds());
+      }
  
-//       var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-//       var myOptions = {
-//       zoom: 15,
-//       center: latlng,
-//       mapTypeControl: false,
-//       navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
-//       mapTypeId: google.maps.MapTypeId.ROADMAP
-//       };
-      
-//       var map = new google.maps.Map(document.getElementById("mapload"), myOptions);
+      function geolocationError(positionError) {
+        document.getElementById("error").innerHTML += "Error: " + positionError.message + "<br />";
+      }
+ 
+      function geolocateUser() {
+        // If the browser supports the Geolocation API
+        if (navigator.geolocation)
+        {
+          var positionOptions = {
+            enableHighAccuracy: true,
+            timeout: 10 * 1000 // 10 seconds
+          };
+          navigator.geolocation.getCurrentPosition(geolocationSuccess, geolocationError, positionOptions);
+        }
+        else
+          document.getElementById("error").innerHTML += "Your browser doesn't support the Geolocation API";
+      }
+ 
+      window.onload = geolocateUser;
   
-//       var marker = new google.maps.Marker({
-//       position: latlng, 
-//       map: map, 
-//       title:"You are here! (at least within a "+position.coords.accuracy+" meter radius)"
-//         });
-//       }
-  // var latlng = {
-  //             var streetaddress = $("#streetaddress").val();
-  //             var city = $("#city").val();
-  //             var state = $("#state").val();
-  //             var zip = $("#zip")
-  //         };
-//yayayayayayaayay//
+function calculateRoute(from, to) {
+        var myOptions = {
+          zoom: 10,
+          center: new google.maps.LatLng(32.90, 80.03),
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        // Draw the map
+        var mapObject = new google.maps.Map(document.getElementById("map"), myOptions);
+ 
+        var directionsService = new google.maps.DirectionsService();
+        var directionsRequest = {
+          origin: from,
+          destination: to,
+          provideRouteAlternatives: true,
+          travelMode: google.maps.DirectionsTravelMode.DRIVING,
+          unitSystem: google.maps.UnitSystem.IMPERIAL
+        };
+        directionsService.route(
+        directionsRequest,
+        function (response, status) {
+        if (status == google.maps.DirectionsStatus.OK) {
+            for (var i = 0, len = response.routes.length; i < len; i++) {
+                new google.maps.DirectionsRenderer({
+                    map: mapObject,
+                    directions: response,
+                    routeIndex: i
+                });
+            }
+        } else {
+            $("#error").append("Unable to retrieve your route<br />");
+        }
+    }
+);
+      }
+ 
+      $(document).ready(function() {
+        // If the browser supports the Geolocation API
+        if (typeof navigator.geolocation == "undefined") {
+          $("#error").text("Your browser doesn't support the Geolocation API");
+          return;
+        }
+ 
+        $("#from-link, #to-link").click(function(event) {
+          event.preventDefault();
+          var addressId = this.id.substring(0, this.id.indexOf("-"));
+ 
+          navigator.geolocation.getCurrentPosition(function(position) {
+            var geocoder = new google.maps.Geocoder();
+            geocoder.geocode({
+              "location": new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
+            },
+            function(results, status) {
+              if (status == google.maps.GeocoderStatus.OK)
+                $("#" + addressId).val(results[0].formatted_address);
+              else
+                $("#error").append("Unable to retrieve your address<br />");
+            });
+          },
+          function(positionError){
+            $("#error").append("Error: " + positionError.message + "<br />");
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 10 * 1000 // 10 seconds
+          });
+        });
+ 
+        $("#calculate-route").submit(function(event) {
+          event.preventDefault();
+          calculateRoute($("#from").val(), $("#to").val());
+        });
+      });
